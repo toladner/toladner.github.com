@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const year = node.querySelector("attribute[name='year']")?.textContent?.split('-')[0] || 'No year available';
                 const doi = node.querySelector("attribute[name='doi']")?.textContent;
                 const pdf = node.querySelector("file[mime-type='application/pdf']")?.getAttribute('filename');
+                const id = node.getAttribute('id')
 
                 // Format the authors string
                 authors = authors.split(';').map(name => {
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <p class="card-text mb-2">${authors}<br><small class="text-muted">${venue}, ${year}</small></p>
             <div>
               ${doi ? `<a href="https://doi.org/${doi}" target="_blank" class="btn btn-outline-primary btn-sm me-2"><i class="bi bi-link-45deg"></i> DOI</a>` : ''}
-              ${pdf ? `<a href="https://mediatum.ub.tum.de/download/${pdf}" target="_blank" class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-pdf"></i> PDF</a>` : ''}
+              ${pdf ? `<a href="https://mediatum.ub.tum.de/doc/${id}/${pdf}" target="_blank" class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-pdf"></i> PDF</a>` : ''}
             </div>
           </div>
         `;

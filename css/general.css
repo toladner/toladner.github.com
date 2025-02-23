@@ -110,6 +110,24 @@ section h2::after {
     border-radius: 3px;
 }
 
+section .year-header {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+section .year-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.5rem;
+    width: 1rem;
+    height: 3px;
+    background-color: var(--bs-primary);
+    border-radius: 3px;
+}
+
 /* Publication cards */
 .card {
     border: none;
