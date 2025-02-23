@@ -176,3 +176,13 @@ a {
 img {
     width: 100%;
 }
+
+.news {
+    font-style: italic;
+}
+.news .text-muted {
+    font-style: normal;
+}
+.news .text-emph {
+    font-style: normal;
+}
