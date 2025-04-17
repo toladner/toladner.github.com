@@ -25,15 +25,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     node.querySelector("attribute[name='congresstitle']")?.textContent || 'No venue available';
                 const year = node.querySelector("attribute[name='year']")?.textContent?.split('-')[0] || 'No year available';
                 const doi = node.querySelector("attribute[name='doi']")?.textContent;
+                let www = node.querySelector("attribute[name='www-address']")?.textContent;
                 const pdf = node.querySelector("file[mime-type='application/pdf']")?.getAttribute('filename');
                 const id = node.getAttribute('id')
 
                 // Format the authors string
-                authors = authors.split(';').map(name => {
-                    let [last, first] = name.trim().split(', ');
-                    if (!first) return last;
-                    let formattedName = `${first} ${last}`;
-                    return formattedName.includes("Tobias Ladner") ? `<u>${formattedName}</u>` : formattedName;
+                if (authors.includes(';')) {
+                    // change lastname; firstname -> firstname lastname
+                    authors = authors.split(';').map(name => {
+                        let [last, first] = name.trim().split(', ');
+                        if (!first) return last;
+                        return `${first} ${last}`;
+                    }).join(', ');
+                }
+                // underline my name
+                authors = authors.split(',').map(name => {
+                    return name.split('*').map(name => name.includes("Tobias Ladner") ? `<u>${name}</u>` : name).join('*');
                 }).join(', ').replace(/, ([^,]+)$/, ', and $1');
 
                 // Insert a year header if the year changes
@@ -45,6 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     lastYear = year;
                 }
 
+                // format www
+                if (www.toLowerCase().includes('openrevie')) {
+                    www = www.split(';')[0];
+                } else {
+                    www = undefined
+                }
+
                 // Create the publication card
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card mb-4';
@@ -54,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <p class="card-text mb-2">${authors}<br><small class="text-muted">${venue}, ${year}</small></p>
             <div>
               ${doi ? `<a href="https://doi.org/${doi}" target="_blank" class="btn btn-outline-primary btn-sm me-2"><i class="bi bi-link-45deg"></i> DOI</a>` : ''}
+              ${www ? `<a href="${www}" target="_blank" class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-search"></i> OpenReview</a>` : ''}
               ${pdf ? `<a href="https://mediatum.ub.tum.de/doc/${id}/${pdf}" target="_blank" class="btn btn-outline-secondary btn-sm"><i class="bi bi-file-earmark-pdf"></i> PDF</a>` : ''}
             </div>
           </div>
