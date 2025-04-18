@@ -41,7 +41,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 // underline my name
                 authors = authors.split(',').map(name => {
                     return name.split('*').map(name => name.includes("Tobias Ladner") ? `<u>${name}</u>` : name).join('*');
-                }).join(', ').replace(/, ([^,]+)$/, ', and $1');
+                });
+                // combine authors
+                if (authors.length === 2) {
+                    authors = authors.join(' and ');
+                } else {
+                    authors = authors.join(', ').replace(/, ([^,]+)$/, ', and $1');
+                }
 
                 // Insert a year header if the year changes
                 if (year !== lastYear) {
