@@ -21,3 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTheme(currentTheme === 'light' ? 'dark' : 'light');
     });
 });
+
+// enable tooltips
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
