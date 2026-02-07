@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // format www
-                if (www.toLowerCase().includes('openrevie')) {
+                if (www?.toLowerCase().includes('openreview')) {
                     www = www.split(';')[0];
                 } else {
                     www = undefined
