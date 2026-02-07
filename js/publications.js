@@ -2,6 +2,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const apiUrl = 'https://mediatum.ub.tum.de/services/export/node/670506/allchildren?q=author=ladner%20or%20author-contrib=ladner';
     const container = document.getElementById('publication-container');
 
+    // Show placeholder cards while loading
+    function createPlaceholderCard() {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card mb-4';
+        cardDiv.innerHTML = `
+          <div class="card-body placeholder-glow">
+            <h5 class="card-title mb-3"><span class="placeholder col-8"></span></h5>
+            <p class="card-text mb-2"><span class="placeholder col-6"></span><br><small class="text-muted"><span class="placeholder col-4"></span></small></p>
+            <div>
+              <a class="btn btn-outline-primary btn-sm me-2 disabled"><i class="bi bi-link-45deg"></i> <span class="placeholder placeholder-sm" style="width: 25px;"></span></a>
+              <a class="btn btn-outline-secondary btn-sm me-2 disabled"><i class="bi bi-search"></i> <span class="placeholder placeholder-sm" style="width: 70px;"></span></a>
+              <a class="btn btn-outline-secondary btn-sm disabled"><i class="bi bi-file-earmark-pdf"></i> <span class="placeholder placeholder-sm" style="width: 25px;"></span></a>
+            </div>
+          </div>
+        `;
+        return cardDiv;
+    }
+
+    for (let i = 0; i < 3; i++) {
+        container.appendChild(createPlaceholderCard());
+    }
+
     fetch(apiUrl)
         .then(response => response.text())
         .then(xmlText => {
@@ -15,6 +37,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const yearB = parseInt(b.querySelector("attribute[name='year']")?.textContent?.split('-')[0] || "0", 10);
                 return yearB - yearA;
             });
+
+            // Clear placeholders
+            container.innerHTML = '';
 
             let lastYear = null;
 
