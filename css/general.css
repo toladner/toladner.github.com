@@ -85,6 +85,7 @@ html {
 .profile-image {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: transform var(--transition-speed);
+    cursor: pointer;
 }
 
 /* Section styling */
@@ -163,6 +164,17 @@ footer {
 [data-bs-theme="light"] .card {
     background-color: #eee;
     transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+[data-bs-theme="light"] .text-muted {
+    color: #555 !important;
+}
+
+[data-bs-theme="light"] {
+    --bs-primary: #2563eb;
+    --bs-primary-rgb: 37, 99, 235;
+    --bs-link-color: #2563eb;
+    --bs-link-hover-color: #1d4ed8;
 }
 
 /* Dark mode specific styles */
