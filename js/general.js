@@ -7,28 +7,32 @@
 })();
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Dark mode toggle
     const darkModeToggle = document.getElementById('dark-mode-toggle');
-    if (!darkModeToggle) return;
-    const toggleIcon = darkModeToggle.querySelector('i');
+    if (darkModeToggle) {
+        const toggleIcon = darkModeToggle.querySelector('i');
 
-    // Update icon to match current theme
-    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-    toggleIcon.className = currentTheme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+        // Update icon to match current theme
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+        toggleIcon.className = currentTheme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
 
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-bs-theme', theme);
-        toggleIcon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
-        localStorage.setItem('theme', theme);
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            toggleIcon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+            localStorage.setItem('theme', theme);
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
     }
 
-    darkModeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-        setTheme(currentTheme === 'light' ? 'dark' : 'light');
-    });
-});
-
-// enable tooltips
-document.addEventListener("DOMContentLoaded", function () {
+    // Enable tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    // Dynamic footer year
+    const yearEl = document.getElementById('copyright-year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 });
