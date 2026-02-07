@@ -420,8 +420,8 @@
                     ctx.globalAlpha = specAppear * 0.7;
                     ctx.fillStyle = '#22c55e';
                     ctx.font = '10px Inter, sans-serif';
-                    ctx.textAlign = 'right';
-                    ctx.fillText('spec', L.outputSetCx + boxPad, L.outputSetCy - boxPad * 0.95 - 4);
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Specification', L.outputSetCx, L.outputSetCy - boxPad * 0.95 - 4);
                     ctx.restore();
                 }
 
