@@ -20,6 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
         return cardDiv;
     }
 
+    const yearHeader = document.createElement('h4');
+    yearHeader.className = 'year-header placeholder-glow';
+    yearHeader.innerHTML = '<span class="placeholder" style="width: 60px;"></span>';
+    container.appendChild(yearHeader);
+
     for (let i = 0; i < 3; i++) {
         container.appendChild(createPlaceholderCard());
     }

@@ -169,6 +169,10 @@ footer {
 [data-bs-theme="dark"] {
     --bs-body-bg: #111827;
     --bs-body-color: #e5e7eb;
+    --bs-primary: #4a90e2;
+    --bs-primary-rgb: 74, 144, 226;
+    --bs-link-color: #4a90e2;
+    --bs-link-hover-color: #6ba8f0;
 }
 
 [data-bs-theme="dark"] .card {
