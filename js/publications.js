@@ -47,12 +47,47 @@ document.addEventListener("DOMContentLoaded", function () {
             container.innerHTML = '';
 
             let lastYear = null;
+            let totalCount = 0;
+            let firstAuthoredCount = 0;
+            let competitionCount = 0;
+            let preprintCount = 0;
 
             nodes.forEach(node => {
                 const title = node.querySelector("attribute[name='title-contrib']")?.textContent || 'No title available';
                 let authors = node.querySelector("attribute[name='author-contrib']")?.textContent || 'No authors available';
+                const rawAuthors = authors;
                 const venue = node.querySelector("attribute[name='journal-title']")?.textContent ||
                     node.querySelector("attribute[name='congresstitle']")?.textContent || 'No venue available';
+
+                // Count statistics
+                totalCount++;
+                const isCompetition = /ARCH-COMP|VNN-COMP/i.test(title) || /ARCH-COMP|VNN-COMP/i.test(venue);
+                if (isCompetition) competitionCount++;
+                if (/arxiv/i.test(venue) && !isCompetition) preprintCount++;
+
+                let isFirstAuthored = false;
+                if (rawAuthors.includes(';')) {
+                    const authorList = rawAuthors.split(';').map(a => a.trim());
+                    const firstAuthor = authorList[0];
+                    if (/Ladner/.test(firstAuthor) && /Tobias/.test(firstAuthor)) {
+                        isFirstAuthored = true;
+                    }
+                    if (!isFirstAuthored) {
+                        authorList.forEach(author => {
+                            if (author.includes('*') && /Ladner/.test(author) && /Tobias/.test(author)) {
+                                isFirstAuthored = true;
+                            }
+                        });
+                    }
+                } else {
+                    if (/Tobias\s+Ladner/.test(rawAuthors.split(',')[0].trim())) {
+                        isFirstAuthored = true;
+                    }
+                    if (!isFirstAuthored && /Tobias\s+Ladner\s*\*/.test(rawAuthors)) {
+                        isFirstAuthored = true;
+                    }
+                }
+                if (isFirstAuthored) firstAuthoredCount++;
                 const year = node.querySelector("attribute[name='year']")?.textContent?.split('-')[0] || 'No year available';
                 const doi = node.querySelector("attribute[name='doi']")?.textContent;
                 let www = node.querySelector("attribute[name='www-address']")?.textContent;
@@ -111,6 +146,13 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
                 container.appendChild(cardDiv);
             });
+
+            // Add publication summary
+            const summary = document.createElement('p');
+            summary.className = 'text-center text-muted mt-3';
+            summary.style.fontSize = '0.75rem';
+            summary.textContent = `${totalCount} publications · ${firstAuthoredCount} (co-)first-authored · ${preprintCount} preprints · ${competitionCount} competition reports`;
+            container.appendChild(summary);
         })
         .catch(error => {
             console.error('Error fetching or parsing XML:', error);
