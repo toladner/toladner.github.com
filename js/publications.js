@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const apiUrl = 'https://mediatum.ub.tum.de/services/export/node/670506/allchildren?q=author=ladner%20or%20author-contrib=ladner';
+    const apiUrl = 'https://mediatum.ub.tum.de/services/export/node/670506/allchildren?q=author=ladner%20or%20author-contrib=ladner%20or%20author.surname=ladner';
     const container = document.getElementById('publication-container');
 
     // Show placeholder cards while loading
@@ -38,17 +38,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Extract all data once per node
             const pubs = nodes.map(node => {
-                const title = node.querySelector("attribute[name='title-contrib']")?.textContent || node.querySelector("attribute[name='reporttitle']")?.textContent || 'No title available';
-                const rawAuthors = node.querySelector("attribute[name='author-contrib']")?.textContent || node.querySelector("attribute[name='author']")?.textContent || 'No authors available';
+                const title = node.querySelector("attribute[name='title-contrib']")?.textContent || node.querySelector("attribute[name='reporttitle']")?.textContent || node.querySelector("attribute[name='title']")?.textContent || 'No title available';
+                const rawAuthors = (() => {
+                    const a = node.querySelector("attribute[name='author-contrib']")?.textContent || node.querySelector("attribute[name='author']")?.textContent;
+                    if (a) return a;
+                    const firstName = node.querySelector("attribute[name='author.firstname']")?.textContent?.trim().split(/\s+/)[0];
+                    const lastName = node.querySelector("attribute[name='author.surname']")?.textContent?.trim();
+                    if (firstName && lastName) return `${firstName} ${lastName}`;
+                    return 'No authors available';
+                })();
                 const venue = node.querySelector("attribute[name='journal-title']")?.textContent ||
                     node.querySelector("attribute[name='congresstitle']")?.textContent ||
-                    node.querySelector("attribute[name='contracting-organization']")?.textContent || 'No venue available';
+                    node.querySelector("attribute[name='contracting-organization']")?.textContent ||
+                               (node.querySelector("attribute[name='pdf_subject']")?.textContent ? node.querySelector("attribute[name='pdf_subject']").textContent + ' · Technical University of Munich' : undefined) ||
+                    node.querySelector("attribute[name='type']")?.textContent || 'No venue available';
                 const year = node.querySelector("attribute[name='year']")?.textContent?.split('-')[0] || 'No year available';
+                const id = node.getAttribute('id');
+                const isDiss = node.getAttribute('type') === 'document/diss';
                 let doi = node.querySelector("attribute[name='doi']")?.textContent;
                 if (doi) doi = `https://doi.org/${doi}`;
+                if (!doi && isDiss) doi = `https://mediatum.ub.tum.de/${id}`;
                 let www = node.querySelector("attribute[name='www-address']")?.textContent;
                 const pdf = node.querySelector("file[mime-type='application/pdf']")?.getAttribute('filename');
-                const id = node.getAttribute('id');
 
                 // Determine author priority:
                 // 0 = sole first author, 1 = shared first author, 2 = remaining, 3 = competition report
@@ -72,10 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 } else {
                     const firstPart = rawAuthors.split(',')[0].trim();
-                    if (/Tobias\s+Ladner/.test(firstPart)) {
+                    if (/Tobias/.test(firstPart) && /Ladner/.test(firstPart)) {
                         priority = rawAuthors.includes('*') ? 1 : 0;
                         isFirstAuthored = true;
-                    } else if (/Tobias\s+Ladner\s*\*/.test(rawAuthors)) {
+                    } else if (/Tobias/.test(rawAuthors) && /Ladner\s*\*/.test(rawAuthors)) {
                         priority = 1;
                         isFirstAuthored = true;
                     }
@@ -91,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }).join(', ');
                 }
                 authors = authors.split(',').map(name => {
-                    return name.split('*').map(part => part.includes("Tobias Ladner") ? `<u>${part}</u>` : part).join('*');
+                    return name.split('*').map(part => (/Tobias/.test(part) && /Ladner/.test(part)) ? `<u>${part}</u>` : part).join('*');
                 });
                 if (authors.length === 2) {
                     authors = authors.join(' and ');
@@ -145,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 cardDiv.innerHTML = `
           <div class="card-body">
             <h5 class="card-title mb-3">${pub.title}</h5>
-            <p class="card-text mb-2">${pub.authors}<br><small class="text-muted">${pub.venue}, ${pub.year}</small></p>
+            <p class="card-text mb-2">${pub.authors}<br><small class="text-muted">${pub.venue} · ${pub.year}</small></p>
             <div>
               ${pub.doi ? `<a href="${pub.doi}" target="_blank" class="btn btn-outline-primary btn-sm me-2"><i class="bi bi-link-45deg"></i> DOI</a>` : ''}
               ${pub.openreview ? `<a href="${pub.openreview}" target="_blank" class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-search"></i> OpenReview</a>` : ''}
