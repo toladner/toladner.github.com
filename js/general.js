@@ -1,8 +1,7 @@
 // Set theme immediately to prevent flash of wrong theme
 (function () {
-    const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
     const storedTheme = localStorage.getItem('theme');
-    const theme = storedTheme || (systemPrefersLight ? 'light' : 'dark');
+    const theme = storedTheme || 'dark';
     document.documentElement.setAttribute('data-bs-theme', theme);
 })();
 
