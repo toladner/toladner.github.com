@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 })();
                 const venue = node.querySelector("attribute[name='journal-title']")?.textContent ||
                     node.querySelector("attribute[name='congresstitle']")?.textContent ||
+                    node.querySelector("attribute[name='booktitle']")?.textContent ||
                     node.querySelector("attribute[name='contracting-organization']")?.textContent ||
                                (node.querySelector("attribute[name='pdf_subject']")?.textContent ? node.querySelector("attribute[name='pdf_subject']").textContent + ' · Technical University of Munich' : undefined) ||
                     node.querySelector("attribute[name='type']")?.textContent || 'No venue available';
